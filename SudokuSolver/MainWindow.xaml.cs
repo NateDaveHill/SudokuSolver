@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,10 +17,13 @@ namespace SudokuSolver
     /// </summary>
     public partial class MainWindow : Window
     {
+
+
         public MainWindow()
         {
             InitializeComponent();
             SudokuBoard.ItemsSource = LoadCollectionData();
+            
         }
 
         private List<GridData> LoadCollectionData()
@@ -46,11 +50,27 @@ namespace SudokuSolver
                 Three = 2
             });
 
-
             return boardData;
         }
 
         private void BtnSolve_OnClick(object sender, RoutedEventArgs e)
+        {
+            var items = SudokuBoard.ItemsSource as IEnumerable<GridData>;
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    var propertyValue = item.One;
+                }
+            }
+        }
+
+        private void BtnCancel_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BtnRandomPopulate_OnClick(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
         }
