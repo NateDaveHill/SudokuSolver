@@ -47,7 +47,7 @@ namespace SudokuSolver
             
             boardData.Add(new GridData()
             {
-                One = 1,
+                One = 0,
                 Two = 3,
                 Three = 2
             });
@@ -59,11 +59,12 @@ namespace SudokuSolver
         {
             List<int> currentColumn = new List<int>();
             int itemInColumn = 0;
+            IEnumerable<int> missingNumbers = null;
 
-            var items = SudokuBoard.ItemsSource as IEnumerable<GridData>;
-            if (items != null)
+            var numbers = SudokuBoard.ItemsSource as IEnumerable<GridData>;
+            if (numbers != null)
             {
-                foreach (var item in items)
+                foreach (var item in numbers)
                 {
                     itemInColumn = item.One;
                     currentColumn.Add(item.One);
@@ -71,7 +72,19 @@ namespace SudokuSolver
 
                 for (int i = 0; i < 3; i++)
                 {
-                    var result = Enumerable.Range(1, 3).Except(currentColumn);
+                    missingNumbers = Enumerable.Range(1, 3).Except(currentColumn);
+                }
+
+                foreach (var item in numbers)
+                {
+                    if (item.One == 0)
+                    {
+                        foreach (var missingNumber in missingNumbers)
+                        {
+                            item.One = missingNumber;
+                        }
+
+                    }
                 }
             }
         }
