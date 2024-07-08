@@ -40,7 +40,7 @@ namespace SudokuSolver
             
             boardData.Add(new GridData()
             {
-                One = 3,
+                One = 0,
                 Two = 2,
                 Three = 1
             });
@@ -71,7 +71,7 @@ namespace SudokuSolver
 
                 for (int i = 0; i < 3; i++)
                 {
-                    var result = Enumerable.Range(0, 3).Except(currentColumn);
+                    var result = Enumerable.Range(1, 3).Except(currentColumn);
                 }
             }
         }
