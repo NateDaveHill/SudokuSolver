@@ -25,20 +25,94 @@ namespace SudokuSolver
         List<GridData> boardData = new List<GridData>();
 
 
-
         public MainWindow()
         {
             InitializeComponent();
-            SudokuBoard.ItemsSource = LoadCollectionData();
         }
 
-        private List<GridData> LoadCollectionData()
-        {
 
+        private void BtnSolve_OnClick(object sender, RoutedEventArgs e)
+        {
+            List<GridData> updatedNumbers = new List<GridData>();
+            List<int> currentColumnOne = new List<int>();
+            List<int> currentColumnTwo = new List<int>();
+            List<int> currentColumnThree = new List<int>();
+            IEnumerable<int> missingNumbersOne = null;
+            IEnumerable<int> missingNumbersTwo = null;
+            IEnumerable<int> missingNumbersThree = null;
+            int itemInColumn = 0;
+
+
+            var numbers = SudokuBoard.ItemsSource as IEnumerable<GridData>;
+            if (numbers != null)
+            {
+                foreach (var item in numbers)
+                {
+                    itemInColumn = item.One;
+                    currentColumnOne.Add(item.One);
+                    currentColumnTwo.Add(item.Two);
+                    currentColumnThree.Add(item.Three);
+                }
+
+              
+                    missingNumbersOne = Enumerable.Range(1, 3).Except(currentColumnOne);
+                    missingNumbersTwo = Enumerable.Range(1, 3).Except(currentColumnTwo);
+                    missingNumbersThree = Enumerable.Range(1, 3).Except(currentColumnThree);
+                
+
+
+                foreach (var number in numbers)
+                {
+                    if (number.One == 0)
+                    {
+                        foreach (var missingNumber in missingNumbersOne)
+                        {
+                            updatedNumbers.Add(new GridData
+                                { One = missingNumber, Two = number.Two, Three = number.Three });
+                        }
+                    }
+
+                    else if (number.Two == 0)
+                    {
+                        foreach (var missingNumber in missingNumbersTwo)
+                        {
+                            updatedNumbers.Add(new GridData
+                                { One = number.One, Two = missingNumber, Three = number.Three });
+                        }
+                    }
+
+                    else if (number.Three == 0)
+                    {
+                        foreach (var missingNumber in missingNumbersThree)
+                        {
+                            updatedNumbers.Add(new GridData
+                                { One = number.One, Two = number.Two, Three = missingNumber });
+                        }
+                    }
+
+                    else
+                    {
+                        updatedNumbers.Add(number);
+                    }
+                }
+
+                SudokuBoard.ItemsSource = null;
+                SudokuBoard.ItemsSource = updatedNumbers;
+            }
+        }
+
+        private void BtnCancel_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnRandomPopulate_OnClick(object sender, RoutedEventArgs e)
+        {
+            
             boardData.Add(new GridData()
             {
                 One = 1,
-                Two = 2,
+                Two = 0,
                 Three = 3
             });
 
@@ -51,81 +125,12 @@ namespace SudokuSolver
 
             boardData.Add(new GridData()
             {
-                One = 2,
+                One = 1,
                 Two = 3,
-                Three = 2
+                Three = 0
             });
 
-            return boardData;
-        }
-
-        private void BtnSolve_OnClick(object sender, RoutedEventArgs e)
-        {
-            List<GridData> updatedNumbers = new List<GridData>();
-            List<int> currentColumn = new List<int>();
-            IEnumerable<int> missingNumbers = null;
-            int itemInColumn = 0;
-
-
-            var numbers = SudokuBoard.ItemsSource as IEnumerable<GridData>;
-            if (numbers != null)
-            {
-
-                foreach (var item in boardData)
-                {
-                    Type type = typeof(GridData);
-
-                    PropertyInfo[] properties = type.GetProperties();
-
-                    foreach (var property in properties)
-                    {
-                        string propertyName = property.Name;
-                        int propertyValue = Convert.ToInt32(property.GetValue(item));
-
-                    }
-                }
-
-
-                foreach (var item in numbers)
-                {
-                    itemInColumn = item.One;
-                    currentColumn.Add(item.One);
-                }
-
-                for (int i = 0; i < 3; i++)
-                {
-                    missingNumbers = Enumerable.Range(1, 3).Except(currentColumn);
-                }
-
-
-                foreach (var number in numbers)
-                {
-                    if (number.One == 0)
-                    {
-                        foreach (var missingNumber in missingNumbers)
-                        {
-                            updatedNumbers.Add(new GridData { One = missingNumber, Two = number.Two, Three = number.Three });
-                        }
-                    }
-                    else
-                    {
-                        updatedNumbers.Add(number);
-                    }
-                }
-
-                SudokuBoard.ItemsSource = updatedNumbers;
-
-            }
-        }
-
-        private void BtnCancel_OnClick(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void BtnRandomPopulate_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
+            SudokuBoard.ItemsSource = boardData;
         }
     }
 }
